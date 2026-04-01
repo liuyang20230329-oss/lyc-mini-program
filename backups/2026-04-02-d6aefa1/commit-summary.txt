@@ -1,0 +1,43 @@
+commit d6aefa13fc29c7b7599b8ed89ca91db3c68be241
+Author:     liuyang20230329-oss <liuyang20230329-oss@users.noreply.github.com>
+AuthorDate: Thu Apr 2 06:35:19 2026 +0800
+Commit:     liuyang20230329-oss <liuyang20230329-oss@users.noreply.github.com>
+CommitDate: Thu Apr 2 06:35:19 2026 +0800
+
+    Backup app updates and cloud audio integration
+
+M	NEXT-STEPS.md
+M	README.md
+M	app.js
+M	app.json
+A	cloudfunctions/resolveAudioUrl/index.js
+A	cloudfunctions/resolveAudioUrl/package.json
+M	components/login-sheet/index.js
+M	components/portal-card/index.wxml
+M	components/portal-card/index.wxss
+M	docs/architecture.md
+A	docs/auth-trial-prd.md
+A	docs/auth-trial-srs.md
+A	docs/cloud-audio-release.md
+M	pages/about/index.js
+M	pages/about/index.wxml
+M	pages/discover/index.js
+M	pages/discover/index.wxss
+M	pages/history/index.js
+M	pages/history/index.wxml
+M	pages/home/index.js
+M	pages/home/index.json
+M	pages/home/index.wxml
+M	pages/tool/index.js
+M	pages/tool/index.wxml
+M	project.config.json
+M	project.config.json.example
+A	scripts/verify-cloud-audio-config.js
+A	utils/audio-manifest.js
+A	utils/audio-source.js
+M	utils/auth.js
+A	utils/cloud-config.js
+M	utils/content-data.js
+M	utils/copy.js
+A	utils/growth.js
+M	utils/trial.js
