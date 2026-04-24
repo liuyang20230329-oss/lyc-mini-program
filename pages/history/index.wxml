@@ -1,3 +1,4 @@
+<!-- Template overview: pages\history\index.wxml -->
 <view class="page-shell page-shell-tabbed">
   <block wx:if="{{isGuestMode}}">
     <view class="hero-card growth-hero fade-up">

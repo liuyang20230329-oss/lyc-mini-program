@@ -1,3 +1,4 @@
+// File overview: pages\tool\index.js
 const {
   getCategoryById,
   getContinueLesson,
@@ -12,6 +13,7 @@ const {
   getLoginSheetContent
 } = require('../../utils/copy');
 
+// Playback on this page coordinates guest trials, caching, favorites, and debug state.
 const AUDIO_DOWNLOAD_TIMEOUT = 180000;
 const LOCAL_AUDIO_PROBE_TIMEOUT = 3000;
 const FAVORITES_KEY_PREFIX = 'lyc_favorites_';
@@ -46,6 +48,7 @@ function buildAudioDebug(extra) {
   );
 }
 
+// Lesson detail page owns the end-to-end audio playback experience.
 Page({
   data: {
     lesson: null,
@@ -63,10 +66,14 @@ Page({
     showTrialBanner: false,
     showLoginSheet: false,
     loginSheet: getLoginSheetContent(LOGIN_SHEET_SCENARIOS.PLAY_UNLOCK),
+    showVoicePicker: false,
+    currentVoiceId: 'xiaoyue',
+    currentVoiceName: '选择声音',
     playButtonText: '开始播放',
     audioDebug: buildAudioDebug()
   },
 
+  // Resolve the lesson id early so the page can initialize playback and recommendations.
   onLoad: function (options) {
     const lessonId = options.id || getContinueLesson().id;
     const lesson = getLessonById(lessonId) || getContinueLesson();
@@ -78,6 +85,7 @@ Page({
     this.trialSession = null;
     this.trialLimitHandled = false;
     this.isLoggingIn = false;
+    this._loadSavedVoice();
 
     this.setData({
       lesson: lesson,
@@ -130,6 +138,7 @@ Page({
     });
   },
 
+  // Branch between demo playback, guest trial playback, and full playback.
   togglePlay: function () {
     const lesson = this.data.lesson;
 
@@ -207,6 +216,7 @@ Page({
     this.startPlayback(audioSource, false);
   },
 
+  // Prepare a playable source before delegating the actual play call to the audio context.
   startPlayback: function (audioSource, shouldStartTrial, trialState) {
     this.prepareAudioSource(audioSource)
       .then((playableSource) => {
@@ -281,6 +291,7 @@ Page({
     });
   },
 
+  // Favorites are gated behind login because they are stored per user account.
   toggleCollect: function () {
     const lesson = this.data.lesson;
 
@@ -350,63 +361,40 @@ Page({
   },
 
   openLoginSheet: function (scenario, pendingAction) {
-    if (pendingAction) {
-      auth.savePendingAction(pendingAction);
-    }
-
-    this.setData({
-      showLoginSheet: true,
-      loginSheet: getLoginSheetContent(scenario)
-    });
+    wx.navigateTo({ url: '/pages/login/index' });
   },
 
-  closeLoginSheet: function () {
-    auth.consumePendingAction();
-    this.setData({
-      showLoginSheet: false
-    });
-  },
+  closeLoginSheet: function () {},
 
   handleLoginConfirm: function () {
-    if (this.isLoggingIn) {
-      return;
-    }
+    this.setData({ showLoginSheet: false });
+    wx.navigateTo({ url: '/pages/login/index' });
+  },
 
-    this.isLoggingIn = true;
+  openVoicePicker: function () {
+    this.setData({ showVoicePicker: true });
+  },
 
-    auth.loginWithWechat()
-      .then(() => {
-        const pendingAction = auth.consumePendingAction();
+  closeVoicePicker: function () {
+    this.setData({ showVoicePicker: false });
+  },
 
-        this.isLoggingIn = false;
-        this.setData({
-          showLoginSheet: false
-        });
+  onVoiceChange: function (e) {
+    var voiceId = e.detail.voiceId;
+    var names = { xiaoyue: '小月', xiaobei: '小北', xiaomei: '小美', aitong: '艾童', xiaoyun: '小云', siyue: '思悦', aimei: '艾美', aiqi: '艾琪' };
+    try { wx.setStorageSync('lyc_voice_id', voiceId); } catch (_) {}
+    this.setData({ currentVoiceId: voiceId, currentVoiceName: names[voiceId] || voiceId });
+    wx.showToast({ title: '已切换为' + (names[voiceId] || voiceId), icon: 'none' });
+  },
 
-        this.endTrialSession();
-        this.syncPageState();
-
-        wx.showToast({
-          title: COPY.loginSuccessToast,
-          icon: 'none'
-        });
-
-        this.resumePendingAction(pendingAction);
-      })
-      .catch((error) => {
-        this.isLoggingIn = false;
-        auth.clearLoginSession();
-        auth.consumePendingAction();
-        this.setData({
-          showLoginSheet: false
-        });
-
-        console.error('login failed', error);
-        wx.showToast({
-          title: COPY.loginFailedToast,
-          icon: 'none'
-        });
-      });
+  _loadSavedVoice: function () {
+    try {
+      var vid = wx.getStorageSync('lyc_voice_id');
+      if (vid) {
+        var names = { xiaoyue: '小月', xiaobei: '小北', xiaomei: '小美', aitong: '艾童', xiaoyun: '小云', siyue: '思悦', aimei: '艾美', aiqi: '艾琪' };
+        this.setData({ currentVoiceId: vid, currentVoiceName: names[vid] || vid });
+      }
+    } catch (_) {}
   },
 
   resumePendingAction: function (pendingAction) {
@@ -431,6 +419,7 @@ Page({
     }
   },
 
+  // Track one guest trial session so playback can stop exactly at the quota limit.
   beginTrialSession: function (lessonId, trialInfo) {
     const currentTrial = trialInfo || trial.getTrialState();
 
@@ -521,6 +510,7 @@ Page({
     return this.getFavoriteIds().indexOf(lessonId) !== -1;
   },
 
+  // InnerAudioContext events drive both the main CTA state and the debug panel.
   setupAudioContext: function () {
     if (this.audioContext || !wx.createInnerAudioContext) {
       return;
@@ -655,6 +645,7 @@ Page({
     this.audioContext = audioContext;
   },
 
+  // Local HTTP audio is downloaded first because direct playback is unreliable on devices.
   prepareAudioSource: function (audioSource) {
     if (!audioSource) {
       return Promise.reject(new Error('音频地址为空'));
@@ -731,6 +722,7 @@ Page({
     });
   },
 
+  // Probe the LAN audio server so connectivity issues surface before a large download starts.
   probeLocalAudioServer: function (audioSource) {
     if (!this.isLocalDevAudio(audioSource) || !wx.request) {
       return Promise.resolve();

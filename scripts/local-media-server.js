@@ -1,3 +1,4 @@
+// File overview: scripts\local-media-server.js
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
@@ -10,6 +11,7 @@ const MIME_TYPES = {
   '.m4a': 'audio/mp4'
 };
 
+// Return small helper responses for common HTTP error branches.
 function sendNotFound(res) {
   res.statusCode = 404;
   res.end('Not Found');
@@ -66,6 +68,7 @@ function parseRangeHeader(rangeHeader, size) {
   };
 }
 
+// Stream audio files with byte-range support so the mini program can seek and resume.
 function sendFile(filePath, req, res) {
   fs.stat(filePath, (statError, stat) => {
     if (statError || !stat.isFile()) {
@@ -120,6 +123,7 @@ function sendFile(filePath, req, res) {
   });
 }
 
+// Guard the local media root and expose a health endpoint for device-side probing.
 const server = http.createServer((req, res) => {
   const requestPath = decodeURIComponent((req.url || '/').split('?')[0]);
   const relativePath = requestPath.replace(/^\/+/, '');

@@ -1,0 +1,37 @@
+/* Style overview: components\segment-player\index.wxss */
+.segment-player { padding: 0; }
+.sp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24rpx; }
+.sp-title { font-size: 32rpx; font-weight: 800; color: #2f3a4a; }
+.sp-meta { font-size: 24rpx; color: #7b8798; }
+.sp-controls { display: flex; align-items: center; justify-content: space-between; gap: 16rpx; margin-bottom: 24rpx; }
+.sp-btn { flex: 1; text-align: center; padding: 20rpx 0; border-radius: 24rpx; font-size: 28rpx; font-weight: 700; }
+.sp-btn-primary { background: linear-gradient(135deg, #ff8f62 0%, #ff6b3d 100%); color: #fff; }
+.sp-btn-secondary { background: #f6f8fc; color: #4f5f73; }
+.sp-btn-playing { background: linear-gradient(135deg, #ff6b3d 0%, #e85d30 100%); color: #fff; }
+.sp-mode-row { display: flex; gap: 16rpx; margin-bottom: 24rpx; }
+.sp-mode-btn { flex: 1; text-align: center; padding: 14rpx 0; border-radius: 20rpx; font-size: 24rpx; color: #627286; background: #f6f8fc; border: 2rpx solid transparent; }
+.sp-mode-active { color: #ff8f62; border-color: rgba(255, 143, 98, 0.4); background: #fff9f3; }
+.sp-progress { margin-bottom: 24rpx; }
+.sp-progress-bar { height: 8rpx; background: #edf0f5; border-radius: 4rpx; overflow: hidden; }
+.sp-progress-fill { height: 100%; background: linear-gradient(90deg, #ff8f62, #ff6b3d); border-radius: 4rpx; transition: width 0.3s; }
+.sp-progress-text { font-size: 22rpx; color: #8c96a8; text-align: right; margin-top: 8rpx; }
+.sp-current { padding: 24rpx; border-radius: 24rpx; background: linear-gradient(180deg, #fff9f3 0%, #fff 100%); border: 2rpx solid rgba(255, 143, 98, 0.3); margin-bottom: 24rpx; }
+.sp-segment-title { font-size: 28rpx; font-weight: 800; color: #ff8f62; margin-bottom: 12rpx; }
+.sp-segment-text { font-size: 32rpx; font-weight: 700; color: #2f3a4a; line-height: 1.5; margin-bottom: 12rpx; }
+.sp-segment-translation { font-size: 26rpx; color: #4f5f73; line-height: 1.6; margin-bottom: 12rpx; }
+.sp-segment-tip { font-size: 24rpx; color: #627286; padding: 16rpx; border-radius: 16rpx; background: #f6f8fc; line-height: 1.5; }
+.sp-follow-hint { text-align: center; padding: 32rpx; border-radius: 24rpx; background: linear-gradient(180deg, #e8f5e9 0%, #f1f8e9 100%); margin-bottom: 24rpx; }
+.sp-follow-icon { font-size: 48rpx; margin-bottom: 12rpx; }
+.sp-follow-text { font-size: 28rpx; font-weight: 700; color: #2e7d32; margin-bottom: 16rpx; }
+.sp-follow-skip { font-size: 24rpx; color: #66bb6a; }
+.sp-list { margin-top: 16rpx; }
+.sp-item { display: flex; align-items: center; padding: 20rpx 24rpx; border-radius: 20rpx; margin-bottom: 12rpx; background: #fff; border: 2rpx solid transparent; }
+.sp-item-active { border-color: rgba(255, 143, 98, 0.4); background: #fff9f3; }
+.sp-item-done { opacity: 0.7; }
+.sp-item-index { width: 48rpx; height: 48rpx; border-radius: 50%; background: #edf0f5; color: #7b8798; font-size: 22rpx; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-right: 20rpx; flex-shrink: 0; }
+.sp-item-active .sp-item-index { background: #ff8f62; color: #fff; }
+.sp-item-content { flex: 1; min-width: 0; }
+.sp-item-title { font-size: 26rpx; font-weight: 700; color: #2f3a4a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sp-item-text { font-size: 22rpx; color: #7b8798; margin-top: 6rpx; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sp-item-duration { font-size: 22rpx; color: #8c96a8; margin-left: 16rpx; flex-shrink: 0; }
+.sp-item-done-icon { color: #66bb6a; font-weight: 700; margin-left: 12rpx; flex-shrink: 0; }

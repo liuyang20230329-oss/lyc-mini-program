@@ -1,0 +1,17 @@
+<!-- Template overview: components\lesson-card\index.wxml -->
+<view class="lesson-card {{isCompact ? 'lesson-card-compact' : ''}}" wx:if="{{item}}" bindtap="handleTap">
+  <view class="lc-top">
+    <view class="lc-info">
+      <view class="lc-title">{{item.title}}</view>
+      <view class="lc-subtitle" wx:if="{{item.subtitle}}">{{item.subtitle}}</view>
+    </view>
+    <view class="lc-reward" wx:if="{{item.reward}}">
+      <text class="lc-star">★</text>
+      <text>{{item.reward}}</text>
+    </view>
+  </view>
+  <view class="lc-bottom">
+    <text class="lc-mentor" wx:if="{{item.mentor}}">{{item.mentor}}</text>
+    <text class="lc-duration" wx:if="{{item.duration}}">{{item.duration}}</text>
+  </view>
+</view>

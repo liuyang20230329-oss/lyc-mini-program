@@ -1,0 +1,51 @@
+/* Style overview: pages\home\index.wxss */
+.home-hero {
+  background: linear-gradient(160deg, #ffdcb7 0%, #fff7ef 100%);
+}
+
+.home-title {
+  margin-top: 18rpx;
+  font-size: 46rpx;
+  font-family: var(--font-display);
+  font-weight: 900;
+  letter-spacing: 1.5rpx;
+  text-shadow: var(--title-shadow-soft);
+  color: #2f3a4a;
+}
+
+.home-text {
+  margin-top: 16rpx;
+  font-size: 26rpx;
+  line-height: 1.7;
+  color: #455469;
+}
+
+.portal-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 18rpx;
+}
+
+.portal-grid portal-card {
+  width: 48%;
+}
+
+.home-guest {
+  margin-top: 24rpx;
+  background: linear-gradient(160deg, #d9f1ff 0%, #fef3dc 100%);
+}
+
+.home-guest-title {
+  font-size: 34rpx;
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: #2f3a4a;
+}
+
+.home-guest-text {
+  margin: 14rpx 0 22rpx;
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: #57677a;
+}

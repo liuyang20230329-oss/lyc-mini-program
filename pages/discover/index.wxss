@@ -1,0 +1,35 @@
+/* Style overview: pages\discover\index.wxss */
+.discover-tabs {
+  display: flex;
+  gap: 16rpx;
+  padding: 8rpx 0 24rpx;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+}
+
+.discover-tab {
+  display: inline-block;
+  padding: 14rpx 28rpx;
+  border-radius: 24rpx;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #627286;
+  background: #f6f8fc;
+  flex-shrink: 0;
+}
+
+.discover-tab-active {
+  color: #ffffff;
+  background: linear-gradient(135deg, #ff8f62 0%, #ff6b3d 100%);
+}
+
+.discover-empty {
+  padding: 60rpx 32rpx;
+  text-align: center;
+}
+
+.discover-empty-text {
+  font-size: 28rpx;
+  color: #8c96a8;
+}

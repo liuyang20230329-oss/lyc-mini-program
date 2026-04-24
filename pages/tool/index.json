@@ -2,6 +2,7 @@
   "navigationBarTitleText": "内容详情",
   "usingComponents": {
     "lesson-card": "/components/lesson-card/index",
-    "login-sheet": "/components/login-sheet/index"
+    "login-sheet": "/components/login-sheet/index",
+    "voice-picker": "/components/voice-picker/index"
   }
 }

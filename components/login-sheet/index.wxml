@@ -1,0 +1,16 @@
+<!-- Template overview: components\login-sheet\index.wxml -->
+<view class="ls-overlay" wx:if="{{visible}}" bindtap="handleOverlayTap">
+  <view class="ls-sheet" catchtap="">
+    <view class="ls-handle"></view>
+    <view class="ls-title" wx:if="{{title}}">{{title}}</view>
+    <view class="ls-body" wx:if="{{body}}">{{body}}</view>
+    <view class="ls-actions">
+      <view class="action-primary ls-btn-primary" bindtap="handleConfirm">
+        {{primaryText}}
+      </view>
+      <view class="action-secondary ls-btn-secondary" bindtap="handleCancel">
+        {{secondaryText}}
+      </view>
+    </view>
+  </view>
+</view>

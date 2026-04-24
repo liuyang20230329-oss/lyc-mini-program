@@ -1,0 +1,7 @@
+<!-- Template overview: components\portal-card\index.wxml -->
+<view class="portal-card" wx:if="{{item}}" bindtap="handleTap">
+  <view class="pc-badge" wx:if="{{item.badge}}">{{item.badge}}</view>
+  <view class="pc-name">{{item.name}}</view>
+  <view class="pc-subtitle" wx:if="{{item.subtitle}}">{{item.subtitle}}</view>
+  <view class="pc-stats" wx:if="{{item.stats}}">{{item.stats}}</view>
+</view>

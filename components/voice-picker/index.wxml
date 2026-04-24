@@ -1,0 +1,28 @@
+<!-- Template overview: components\voice-picker\index.wxml -->
+<view class="vp-overlay" wx:if="{{visible}}" bindtap="handleOverlayTap">
+  <view class="vp-sheet" catchtap="">
+    <view class="vp-handle"></view>
+    <view class="vp-title">选择朗读声音</view>
+    <view class="vp-subtitle">不同声音适合不同类型的内容</view>
+    <scroll-view scroll-y class="vp-list">
+      <view
+        wx:for="{{voices}}"
+        wx:key="id"
+        class="vp-item {{selectedVoiceId === item.id ? 'vp-item-active' : ''}}"
+        bindtap="pickVoice"
+        data-voice="{{item.id}}"
+      >
+        <view class="vp-avatar">{{item.avatar}}</view>
+        <view class="vp-info">
+          <view class="vp-name">{{item.name}}</view>
+          <view class="vp-desc">{{item.desc}}</view>
+        </view>
+        <view class="vp-check" wx:if="{{selectedVoiceId === item.id}}">✓</view>
+      </view>
+    </scroll-view>
+    <view class="vp-actions">
+      <view class="vp-btn vp-btn-preview" bindtap="previewVoice">试听</view>
+      <view class="vp-btn vp-btn-confirm" bindtap="confirmVoice">确认选择</view>
+    </view>
+  </view>
+</view>

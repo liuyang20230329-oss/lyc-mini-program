@@ -1,3 +1,4 @@
+<!-- Template overview: pages\tool\index.wxml -->
 <view class="page-shell" wx:if="{{lesson}}">
   <view class="hero-card detail-hero fade-up">
     <text class="tag">{{category.name}}</text>
@@ -33,6 +34,9 @@
       <view class="soft-chip">导师：{{lesson.mentor}}</view>
       <view class="soft-chip" bindtap="toggleCollect">
         {{isCollected ? '已收藏' : '加入收藏'}}
+      </view>
+      <view class="soft-chip" bindtap="openVoicePicker">
+        {{currentVoiceName || '选择声音'}}
       </view>
     </view>
     <view class="action-note" wx:if="{{isGuestMode}}">
@@ -167,5 +171,12 @@
     bind:confirm="handleLoginConfirm"
     bind:cancel="closeLoginSheet"
     bind:close="closeLoginSheet"
+  />
+
+  <voice-picker
+    visible="{{showVoicePicker}}"
+    currentVoiceId="{{currentVoiceId}}"
+    bind:change="onVoiceChange"
+    bind:close="closeVoicePicker"
   />
 </view>

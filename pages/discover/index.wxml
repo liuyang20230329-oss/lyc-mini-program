@@ -1,0 +1,34 @@
+<!-- Template overview: pages\discover\index.wxml -->
+<view class="page-shell page-shell-tabbed">
+  <view class="discover-tabs">
+    <view
+      wx:for="{{categoryList}}"
+      wx:key="id"
+      class="discover-tab {{activeCategoryId === item.id ? 'discover-tab-active' : ''}}"
+      data-id="{{item.id}}"
+      bindtap="handleTabTap"
+    >
+      {{item.name}}
+    </view>
+  </view>
+
+  <view class="section-head">
+    <view>
+      <view class="section-title">{{activeCategoryName}}</view>
+      <view class="section-caption">共 {{lessonList.length}} 个内容，选一个开始学习吧。</view>
+    </view>
+  </view>
+
+  <view class="list-block" wx:if="{{lessonList.length > 0}}">
+    <lesson-card
+      wx:for="{{lessonList}}"
+      wx:key="id"
+      item="{{item}}"
+      bind:select="openLesson"
+    />
+  </view>
+
+  <view class="discover-empty fade-up" wx:if="{{lessonList.length === 0}}">
+    <view class="discover-empty-text">这个分类还没有内容，正在准备中。</view>
+  </view>
+</view>

@@ -1,3 +1,4 @@
+/* Style overview: pages\about\index.wxss */
 .parent-hero {
   background: linear-gradient(160deg, #d9f1ff 0%, #fef3dc 100%);
 }

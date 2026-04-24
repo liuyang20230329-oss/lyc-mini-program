@@ -1,3 +1,4 @@
+/* Style overview: custom-tab-bar\index.wxss */
 .tabbar-shell {
   position: fixed;
   left: 0;

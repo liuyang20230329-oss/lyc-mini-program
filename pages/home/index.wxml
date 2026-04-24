@@ -1,0 +1,98 @@
+<!-- Template overview: pages\home\index.wxml -->
+<view class="page-shell page-shell-tabbed">
+  <view class="hero-card home-hero fade-up">
+    <text class="tag">{{appName}}</text>
+    <view class="home-title">{{greeting}}</view>
+    <view class="home-text">
+      每天十分钟，和孩子一起听、读、唱，把学习变成轻松的陪伴时光。
+    </view>
+    <view class="metric-row">
+      <view class="metric-box">
+        <text class="metric-value">{{totalStars}}</text>
+        <text class="metric-label">星星总数</text>
+      </view>
+      <view class="metric-box">
+        <text class="metric-value">{{streakDays}}</text>
+        <text class="metric-label">连续天数</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section-head">
+    <view>
+      <view class="section-title">内容分类</view>
+      <view class="section-caption">英语、儿歌、诗词、故事，选一个开始吧。</view>
+    </view>
+  </view>
+
+  <view class="portal-grid">
+    <portal-card
+      wx:for="{{categoryList}}"
+      wx:key="id"
+      item="{{item}}"
+      bind:select="openCategory"
+    />
+  </view>
+
+  <view class="section-head" wx:if="{{continueLesson}}">
+    <view>
+      <view class="section-title">继续学习</view>
+      <view class="section-caption">上次的内容还在，接着往下听。</view>
+    </view>
+  </view>
+
+  <view class="fade-up" wx:if="{{continueLesson}}" bindtap="openContinue">
+    <lesson-card item="{{continueLesson}}" />
+  </view>
+
+  <view class="section-head" wx:if="{{todayList.length > 0}}">
+    <view>
+      <view class="section-title">今日推荐</view>
+      <view class="section-caption">每天精选几段适合当下时段的内容。</view>
+    </view>
+  </view>
+
+  <view class="list-block" wx:if="{{todayList.length > 0}}">
+    <lesson-card
+      wx:for="{{todayList}}"
+      wx:key="id"
+      item="{{item}}"
+      bind:select="openLesson"
+    />
+  </view>
+
+  <view class="section-head" wx:if="{{bedtimeList.length > 0}}">
+    <view>
+      <view class="section-title">睡前推荐</view>
+      <view class="section-caption">安静的内容，陪孩子慢慢入睡。</view>
+    </view>
+  </view>
+
+  <view class="list-block" wx:if="{{bedtimeList.length > 0}}">
+    <lesson-card
+      wx:for="{{bedtimeList}}"
+      wx:key="id"
+      item="{{item}}"
+      bind:select="openLesson"
+    />
+  </view>
+
+  <view class="hero-card home-guest fade-up" wx:if="{{isGuestMode}}">
+    <view class="home-guest-title">登录解锁完整体验</view>
+    <view class="home-guest-text">
+      登录后可以收藏内容、保存学习记录，还能看到孩子的成长轨迹。
+    </view>
+    <view class="action-primary" bindtap="openLoginSheet">微信一键登录</view>
+  </view>
+
+  <login-sheet
+    visible="{{showLoginSheet}}"
+    title="{{loginSheet.title}}"
+    body="{{loginSheet.body}}"
+    primaryText="{{loginSheet.primaryText}}"
+    secondaryText="{{loginSheet.secondaryText}}"
+    bind:confirm="handleLoginConfirm"
+    bind:cancel="closeLoginSheet"
+    bind:close="closeLoginSheet"
+  />
+</view>

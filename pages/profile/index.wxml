@@ -1,0 +1,76 @@
+<!-- Template overview: pages\profile\index.wxml -->
+<view class="profile-page">
+  <view class="profile-header fade-up">
+    <view class="profile-avatar">
+      <text class="avatar-text">{{initial}}</text>
+    </view>
+    <view class="profile-info">
+      <view class="profile-nickname">{{user.nickname || '未登录'}}</view>
+      <view class="profile-phone" wx:if="{{user.phoneVerified}}">
+        {{maskedPhone}}
+        <text class="verified-badge">已验证</text>
+      </view>
+      <view class="profile-phone" wx:elif="{{isLoggedIn}}">
+        <text class="unverified-text">手机号未绑定</text>
+        <text class="bind-btn" bindtap="goBindPhone">去绑定</text>
+      </view>
+      <view class="profile-phone" wx:else>
+        <text class="login-btn" bindtap="goLogin">点击登录</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section-head">
+    <view><view class="section-title">宝贝信息</view></view>
+  </view>
+
+  <view class="surface-card fade-up" wx:if="{{child}}">
+    <view class="info-row">
+      <text class="info-label">昵称</text>
+      <text class="info-value">{{child.nickname || '未设置'}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">年龄</text>
+      <text class="info-value">{{child.birthYear ? child.birthYear + '年' + child.birthMonth + '月' : '未设置'}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">性别</text>
+      <text class="info-value">{{child.gender === 'male' ? '男孩' : (child.gender === 'female' ? '女孩' : '保密')}}</text>
+    </view>
+    <view class="info-row" bindtap="editChild">
+      <text class="info-label"></text>
+      <text class="info-link">编辑宝贝信息</text>
+    </view>
+  </view>
+
+  <view class="surface-card fade-up" wx:if="{{!child && isLoggedIn}}">
+    <view class="empty-hint">还没有宝贝信息，设置后可以推荐更适合的内容。</view>
+    <view class="action-primary" bindtap="goSetup">设置宝贝信息</view>
+  </view>
+
+  <view class="section-head">
+    <view><view class="section-title">账号管理</view></view>
+  </view>
+
+  <view class="surface-card fade-up">
+    <view class="menu-item" bindtap="goBindPhone" wx:if="{{isLoggedIn && !user.phoneVerified}}">
+      <text class="menu-text">绑定手机号</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" bindtap="clearCache">
+      <text class="menu-text">清除缓存</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" bindtap="showAbout">
+      <text class="menu-text">关于小宇宙学堂</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item menu-item-danger" bindtap="handleLogout" wx:if="{{isLoggedIn}}">
+      <text class="menu-text">退出登录</text>
+    </view>
+  </view>
+
+  <view class="surface-card fade-up" wx:if="{{!isLoggedIn}}">
+    <view class="action-primary" bindtap="goLogin">登录 / 注册</view>
+  </view>
+</view>

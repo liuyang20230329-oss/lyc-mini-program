@@ -1,3 +1,5 @@
+// File overview: custom-tab-bar\index.js
+// Keep custom tab navigation state close to the tab bar component.
 Component({
   data: {
     selected: 0,
@@ -31,6 +33,7 @@ Component({
     ]
   },
 
+  // Forward tab taps to the built-in tab router.
   methods: {
     switchTab: function (event) {
       const data = event.currentTarget.dataset;

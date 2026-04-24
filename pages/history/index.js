@@ -1,3 +1,4 @@
+// File overview: pages\history\index.js
 const {
   GROWTH_PANEL,
   getContinueLesson
@@ -9,6 +10,7 @@ const {
   getLoginSheetContent
 } = require('../../utils/copy');
 
+// History page presents either a login upsell or a growth dashboard.
 Page({
   data: {
     totalStars: GROWTH_PANEL.totalStars,
@@ -34,6 +36,7 @@ Page({
     });
   },
 
+  // Resume the last lesson only after the user is allowed to access growth records.
   openContinue: function () {
     if (this.data.isGuestMode) {
       this.openLoginSheet();
@@ -60,50 +63,13 @@ Page({
   },
 
   openLoginSheet: function () {
-    auth.savePendingAction({
-      type: 'growth_access'
-    });
-
-    this.setData({
-      showLoginSheet: true,
-      loginSheet: getLoginSheetContent(LOGIN_SHEET_SCENARIOS.GROWTH_GUARD)
-    });
+    wx.navigateTo({ url: '/pages/login/index' });
   },
 
-  closeLoginSheet: function () {
-    auth.consumePendingAction();
-    this.setData({
-      showLoginSheet: false
-    });
-  },
+  closeLoginSheet: function () {},
 
   handleLoginConfirm: function () {
-    auth.loginWithWechat()
-      .then(() => {
-        auth.consumePendingAction();
-        this.setData({
-          showLoginSheet: false
-        });
-        this.syncAuthState();
-
-        wx.showToast({
-          title: COPY.loginSuccessToast,
-          icon: 'none'
-        });
-      })
-      .catch((error) => {
-        auth.clearLoginSession();
-        auth.consumePendingAction();
-        this.setData({
-          showLoginSheet: false
-        });
-
-        console.error('growth login failed', error);
-        wx.showToast({
-          title: COPY.loginFailedToast,
-          icon: 'none'
-        });
-      });
+    wx.navigateTo({ url: '/pages/login/index' });
   },
 
   syncTabBar: function (selected) {

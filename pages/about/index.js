@@ -1,3 +1,4 @@
+// File overview: pages\about\index.js
 const { PARENT_PANEL } = require('../../utils/content-data');
 const auth = require('../../utils/auth');
 const {
@@ -6,6 +7,7 @@ const {
   getLoginSheetContent
 } = require('../../utils/copy');
 
+// Parent page packages guidance, observations, and account-aware actions.
 Page({
   data: {
     observations: PARENT_PANEL.observations,
@@ -31,6 +33,7 @@ Page({
     });
   },
 
+  // Quiet mode is currently a local toggle, but it already respects login gating.
   toggleQuietMode: function () {
     if (this.data.isGuestMode) {
       this.openLoginSheet();
@@ -56,50 +59,13 @@ Page({
   },
 
   openLoginSheet: function () {
-    auth.savePendingAction({
-      type: 'parent_access'
-    });
-
-    this.setData({
-      showLoginSheet: true,
-      loginSheet: getLoginSheetContent(LOGIN_SHEET_SCENARIOS.PARENT_GUARD)
-    });
+    wx.navigateTo({ url: '/pages/login/index' });
   },
 
-  closeLoginSheet: function () {
-    auth.consumePendingAction();
-    this.setData({
-      showLoginSheet: false
-    });
-  },
+  closeLoginSheet: function () {},
 
   handleLoginConfirm: function () {
-    auth.loginWithWechat()
-      .then(() => {
-        auth.consumePendingAction();
-        this.setData({
-          showLoginSheet: false
-        });
-        this.syncAuthState();
-
-        wx.showToast({
-          title: COPY.loginSuccessToast,
-          icon: 'none'
-        });
-      })
-      .catch((error) => {
-        auth.clearLoginSession();
-        auth.consumePendingAction();
-        this.setData({
-          showLoginSheet: false
-        });
-
-        console.error('parent login failed', error);
-        wx.showToast({
-          title: COPY.loginFailedToast,
-          icon: 'none'
-        });
-      });
+    wx.navigateTo({ url: '/pages/login/index' });
   },
 
   handleLogout: function () {

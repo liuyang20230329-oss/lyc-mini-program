@@ -1,0 +1,9 @@
+/* Style overview: components\video-player\index.wxss */
+.video-player { width: 100%; }
+.vp-segments { padding: 20rpx 0; }
+.vp-seg-title { font-size: 28rpx; font-weight: 700; color: #2f3a4a; margin-bottom: 16rpx; }
+.vp-seg-scroll { white-space: nowrap; }
+.vp-seg-chip { display: inline-block; padding: 12rpx 24rpx; border-radius: 24rpx; font-size: 24rpx; margin-right: 16rpx; background: #f6f8fc; color: #4f5f73; }
+.vp-seg-chip-active { background: #ff8f62; color: #fff; }
+.vp-seg-chip-done { background: #e8f5e9; color: #2e7d32; }
+.vp-seg-text { margin-top: 16rpx; font-size: 26rpx; line-height: 1.7; color: #4f5f73; padding: 20rpx; border-radius: 16rpx; background: #f6f8fc; }

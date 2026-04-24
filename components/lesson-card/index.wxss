@@ -1,0 +1,81 @@
+/* Style overview: components\lesson-card\index.wxss */
+.lesson-card {
+  padding: 28rpx 32rpx;
+  border-radius: 28rpx;
+  background: #ffffff;
+  box-shadow: 0 8rpx 24rpx rgba(47, 58, 74, 0.04);
+}
+
+.lesson-card:active {
+  opacity: 0.85;
+}
+
+.lc-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.lc-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.lc-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #2f3a4a;
+}
+
+.lc-subtitle {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #7b8798;
+}
+
+.lc-reward {
+  display: inline-flex;
+  align-items: center;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  font-weight: 700;
+  background: rgba(255, 143, 98, 0.12);
+  color: #ff8f62;
+  flex-shrink: 0;
+  margin-left: 20rpx;
+}
+
+.lc-star {
+  margin-right: 6rpx;
+  font-size: 22rpx;
+}
+
+.lc-bottom {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-top: 18rpx;
+}
+
+.lc-mentor {
+  font-size: 24rpx;
+  color: #5a6a7e;
+}
+
+.lc-duration {
+  font-size: 24rpx;
+  color: #8c96a8;
+}
+
+.lesson-card-compact {
+  padding: 20rpx 24rpx;
+}
+
+.lesson-card-compact .lc-title {
+  font-size: 28rpx;
+}
+
+.lesson-card-compact .lc-bottom {
+  margin-top: 12rpx;
+}

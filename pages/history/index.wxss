@@ -1,3 +1,4 @@
+/* Style overview: pages\history\index.wxss */
 .growth-hero {
   background: linear-gradient(160deg, #ffd7a6 0%, #fff7d9 100%);
 }

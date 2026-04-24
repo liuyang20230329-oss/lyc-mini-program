@@ -1,0 +1,42 @@
+<!-- Template overview: components\video-player\index.wxml -->
+<view class="video-player">
+  <video
+    id="lycVideo"
+    src="{{videoUrl}}"
+    controls="{{showControls}}"
+    autoplay="{{autoPlay}}"
+    loop="{{loop}}"
+    muted="{{muted}}"
+    show-fullscreen-btn="{{showFullscreen}}"
+    show-play-btn="{{showPlayBtn}}"
+    show-center-play-btn="{{showCenterPlayBtn}}"
+    enable-progress-gesture="{{true}}"
+    object-fit="contain"
+    bindplay="onPlay"
+    bindpause="onPause"
+    bindended="onEnded"
+    bindtimeupdate="onTimeUpdate"
+    binderror="onError"
+    bindloadedmetadata="onLoaded"
+    style="width: 100%; height: {{videoHeight}}rpx;"
+  ></video>
+
+  <view class="vp-segments" wx:if="{{segments.length > 0}}">
+    <view class="vp-seg-title">分段列表</view>
+    <scroll-view scroll-x="true" class="vp-seg-scroll">
+      <view
+        wx:for="{{segments}}"
+        wx:key="id"
+        class="vp-seg-chip {{activeSegmentIndex === index ? 'vp-seg-chip-active' : ''}} {{item.completed ? 'vp-seg-chip-done' : ''}}"
+        data-index="{{index}}"
+        bindtap="jumpToSegment"
+      >
+        {{item.title || '第 ' + (index + 1) + ' 段'}}
+      </view>
+    </scroll-view>
+
+    <view class="vp-seg-text" wx:if="{{currentSegment && currentSegment.text}}">
+      {{currentSegment.text}}
+    </view>
+  </view>
+</view>

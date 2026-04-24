@@ -1,0 +1,59 @@
+/* Style overview: components\login-sheet\index.wxss */
+.ls-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.ls-sheet {
+  width: 100%;
+  padding: 36rpx 40rpx;
+  padding-bottom: calc(36rpx + env(safe-area-inset-bottom));
+  border-radius: 36rpx 36rpx 0 0;
+  background: #ffffff;
+}
+
+.ls-handle {
+  width: 64rpx;
+  height: 8rpx;
+  margin: 0 auto 28rpx;
+  border-radius: 4rpx;
+  background: #e0e4ea;
+}
+
+.ls-title {
+  font-size: 36rpx;
+  font-weight: 800;
+  color: #2f3a4a;
+}
+
+.ls-body {
+  margin-top: 16rpx;
+  font-size: 28rpx;
+  line-height: 1.7;
+  color: #5a6a7e;
+}
+
+.ls-actions {
+  margin-top: 36rpx;
+}
+
+.ls-btn-primary {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.ls-btn-secondary {
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-top: 20rpx;
+}

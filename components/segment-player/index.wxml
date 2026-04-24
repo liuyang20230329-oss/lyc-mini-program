@@ -1,0 +1,75 @@
+<!-- Template overview: components\segment-player\index.wxml -->
+<view class="segment-player">
+  <view class="sp-header">
+    <view class="sp-title">逐段学习</view>
+    <view class="sp-meta" wx:if="{{totalSegments > 0}}">
+      {{currentSegmentIndex + 1}} / {{totalSegments}} 段
+    </view>
+  </view>
+
+  <view class="sp-controls">
+    <view class="sp-btn sp-btn-secondary" bindtap="prevSegment">
+      上一段
+    </view>
+    <view class="sp-btn {{isPlaying ? 'sp-btn-playing' : 'sp-btn-primary'}}" bindtap="togglePlay">
+      {{isPlaying ? '暂停' : (isFinished ? '重新播放' : '播放当前段')}}
+    </view>
+    <view class="sp-btn sp-btn-secondary" bindtap="nextSegment">
+      下一段
+    </view>
+  </view>
+
+  <view class="sp-mode-row" wx:if="{{showFollowMode}}">
+    <view class="sp-mode-btn {{followMode ? 'sp-mode-active' : ''}}" bindtap="toggleFollowMode">
+      跟读模式
+    </view>
+    <view class="sp-mode-btn {{autoNext ? 'sp-mode-active' : ''}}" bindtap="toggleAutoNext">
+      自动下一段
+    </view>
+    <view class="sp-mode-btn {{loopCurrent ? 'sp-mode-active' : ''}}" bindtap="toggleLoop">
+      单段循环
+    </view>
+  </view>
+
+  <view class="sp-progress" wx:if="{{currentSegment}}">
+    <view class="sp-progress-bar">
+      <view class="sp-progress-fill" style="width: {{segmentProgress}}%"></view>
+    </view>
+    <view class="sp-progress-text">
+      {{currentTimeText}} / {{segmentDurationText}}
+    </view>
+  </view>
+
+  <view class="sp-current" wx:if="{{currentSegment}}">
+    <view class="sp-segment-title">{{currentSegment.title || '第 ' + (currentSegmentIndex + 1) + ' 段'}}</view>
+    <view class="sp-segment-text" wx:if="{{currentSegment.text}}">{{currentSegment.text}}</view>
+    <view class="sp-segment-translation" wx:if="{{currentSegment.translation}}">{{currentSegment.translation}}</view>
+    <view class="sp-segment-tip" wx:if="{{currentSegment.tip}}">{{currentSegment.tip}}</view>
+  </view>
+
+  <view class="sp-follow-hint" wx:if="{{followMode && isWaitingFollow}}">
+    <view class="sp-follow-icon">🎤</view>
+    <view class="sp-follow-text">请跟读这段内容...</view>
+    <view class="sp-follow-skip" bindtap="skipFollow">跳过，播放下一段</view>
+  </view>
+
+  <view class="sp-list">
+    <view
+      wx:for="{{segments}}"
+      wx:key="id"
+      class="sp-item {{currentSegmentIndex === index ? 'sp-item-active' : ''}} {{item.completed ? 'sp-item-done' : ''}}"
+      data-index="{{index}}"
+      bindtap="selectSegment"
+    >
+      <view class="sp-item-index">{{index + 1}}</view>
+      <view class="sp-item-content">
+        <view class="sp-item-title">{{item.title || item.cue || '段落 ' + (index + 1)}}</view>
+        <view class="sp-item-text" wx:if="{{item.text}}">{{item.text}}</view>
+      </view>
+      <view class="sp-item-duration" wx:if="{{item.durationMs}}">
+        {{item.durationMs >= 60000 ? Math.floor(item.durationMs / 60000) + '分' : ''}}{{Math.floor((item.durationMs % 60000) / 1000)}}秒
+      </view>
+      <view class="sp-item-done-icon" wx:if="{{item.completed}}">✓</view>
+    </view>
+  </view>
+</view>

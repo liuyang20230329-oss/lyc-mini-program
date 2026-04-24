@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LYC 小宇宙学堂 - 管理后台</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f6fa; color: #2f3a4a; min-height: 100vh; }
+.header { background: linear-gradient(135deg, #ff8f62, #ff6b3d); color: #fff; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; }
+.header h1 { font-size: 22px; font-weight: 800; }
+.header-right { font-size: 13px; opacity: .85; }
+.nav { background: #fff; border-bottom: 1px solid #edf0f5; display: flex; padding: 0 24px; overflow-x: auto; }
+.nav-item { padding: 14px 20px; font-size: 14px; font-weight: 600; color: #7b8798; cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; transition: all .2s; }
+.nav-item:hover { color: #ff8f62; }
+.nav-item.active { color: #ff8f62; border-bottom-color: #ff8f62; }
+.main { max-width: 1200px; margin: 0 auto; padding: 24px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.stat-card { background: #fff; border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,.04); }
+.stat-value { font-size: 32px; font-weight: 900; color: #ff8f62; }
+.stat-label { font-size: 13px; color: #7b8798; margin-top: 4px; }
+.card { background: #fff; border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.04); }
+.card-title { font-size: 18px; font-weight: 800; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+.btn { display: inline-block; padding: 8px 20px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; border: none; transition: all .2s; }
+.btn-primary { background: linear-gradient(135deg, #ff8f62, #ff6b3d); color: #fff; }
+.btn-secondary { background: #f6f8fc; color: #4f5f73; }
+.btn-danger { background: #ff4757; color: #fff; }
+.btn-sm { padding: 6px 14px; font-size: 12px; }
+.btn:hover { opacity: .85; transform: translateY(-1px); }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 12px 16px; text-align: left; font-size: 13px; border-bottom: 1px solid #edf0f5; }
+th { font-weight: 700; color: #7b8798; background: #fafbfc; position: sticky; top: 0; }
+tr:hover td { background: #fff8ee; }
+.badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.badge-green { background: #d4edda; color: #155724; }
+.badge-yellow { background: #fff3cd; color: #856404; }
+.badge-red { background: #f8d7da; color: #721c24; }
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 13px; font-weight: 700; color: #4f5f73; margin-bottom: 6px; }
+.form-input { width: 100%; padding: 10px 14px; border: 2px solid #edf0f5; border-radius: 10px; font-size: 14px; outline: none; transition: border-color .2s; }
+.form-input:focus { border-color: #ff8f62; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-textarea { width: 100%; padding: 10px 14px; border: 2px solid #edf0f5; border-radius: 10px; font-size: 14px; outline: none; min-height: 80px; resize: vertical; font-family: inherit; }
+.form-textarea:focus { border-color: #ff8f62; }
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 1000; align-items: center; justify-content: center; }
+.modal-overlay.show { display: flex; }
+.modal { background: #fff; border-radius: 20px; padding: 28px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; }
+.modal-title { font-size: 20px; font-weight: 800; margin-bottom: 20px; }
+.modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
+.voice-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
+.voice-card { border: 2px solid #edf0f5; border-radius: 14px; padding: 16px; text-align: center; cursor: pointer; transition: all .2s; }
+.voice-card:hover { border-color: rgba(255,143,98,.4); }
+.voice-card.selected { border-color: #ff8f62; background: #fff8ee; }
+.voice-avatar { font-size: 32px; margin-bottom: 6px; }
+.voice-name { font-size: 14px; font-weight: 700; }
+.voice-desc { font-size: 11px; color: #7b8798; margin-top: 2px; }
+.toast { position: fixed; top: 20px; right: 20px; background: #2f3a4a; color: #fff; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 600; z-index: 2000; display: none; }
+.toast.show { display: block; animation: fadeIn .3s; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+.loading { text-align: center; padding: 40px; color: #7b8798; }
+.section { display: none; }
+.section.active { display: block; }
+.empty { text-align: center; padding: 40px; color: #b0b8c4; font-size: 14px; }
+.pagination { display: flex; gap: 8px; justify-content: center; margin-top: 16px; }
+.pagination .btn { min-width: 36px; text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>LYC 小宇宙学堂 - 管理后台</h1>
+  <div class="header-right" id="statusBar">连接中...</div>
+</div>
+
+<div class="nav">
+  <div class="nav-item active" data-tab="dashboard">概览</div>
+  <div class="nav-item" data-tab="categories">分类管理</div>
+  <div class="nav-item" data-tab="courses">课程管理</div>
+  <div class="nav-item" data-tab="segments">段落编辑</div>
+  <div class="nav-item" data-tab="media">素材库</div>
+  <div class="nav-item" data-tab="tts">语音合成</div>
+</div>
+
+<div class="main">
+  <!-- Dashboard -->
+  <div class="section active" id="sec-dashboard">
+    <div class="stats" id="statsGrid"></div>
+  </div>
+
+  <!-- Categories -->
+  <div class="section" id="sec-categories">
+    <div class="card">
+      <div class="card-title">分类管理 <button class="btn btn-primary btn-sm" onclick="openCategoryModal()">+ 新建分类</button></div>
+      <table><thead><tr><th>ID</th><th>名称</th><th>副标题</th><th>图标</th><th>排序</th><th>操作</th></tr></thead>
+      <tbody id="catTable"></tbody></table>
+    </div>
+  </div>
+
+  <!-- Courses -->
+  <div class="section" id="sec-courses">
+    <div class="card">
+      <div class="card-title">课程管理 <button class="btn btn-primary btn-sm" onclick="openCourseModal()">+ 新建课程</button></div>
+      <div class="form-group" style="margin-bottom:12px">
+        <select id="courseCatFilter" class="form-input" onchange="loadCourses()" style="max-width:200px">
+          <option value="">全部分类</option>
+        </select>
+      </div>
+      <table><thead><tr><th>标题</th><th>分类</th><th>时长</th><th>段落数</th><th>ASR</th><th>操作</th></tr></thead>
+      <tbody id="courseTable"></tbody></table>
+      <div class="pagination" id="coursePagination"></div>
+    </div>
+  </div>
+
+  <!-- Segments -->
+  <div class="section" id="sec-segments">
+    <div class="card">
+      <div class="card-title">段落编辑</div>
+      <div class="form-group">
+        <select id="segCourseSelect" class="form-input" onchange="loadSegments()" style="max-width:300px">
+          <option value="">选择课程</option>
+        </select>
+      </div>
+      <div id="segmentList"></div>
+      <div style="margin-top:16px">
+        <button class="btn btn-primary btn-sm" onclick="addSegmentRow()">+ 添加段落</button>
+        <button class="btn btn-primary btn-sm" style="margin-left:8px" onclick="saveAllSegments()">保存全部</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Media -->
+  <div class="section" id="sec-media">
+    <div class="card">
+      <div class="card-title">素材库 <button class="btn btn-primary btn-sm" onclick="openUploadModal()">上传文件</button></div>
+      <table><thead><tr><th>文件名</th><th>类型</th><th>大小</th><th>状态</th><th>上传时间</th><th>操作</th></tr></thead>
+      <tbody id="mediaTable"></tbody></table>
+    </div>
+  </div>
+
+  <!-- TTS -->
+  <div class="section" id="sec-tts">
+    <div class="card">
+      <div class="card-title">音色选择</div>
+      <div class="voice-grid" id="voiceGrid"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">试听合成</div>
+      <div class="form-group">
+        <label class="form-label">输入文本</label>
+        <textarea id="ttsPreviewText" class="form-textarea" rows="3">你好呀，我是小宇宙学堂的小伙伴，快来和我一起学习吧！</textarea>
+      </div>
+      <button class="btn btn-primary" onclick="ttsPreview()">试听</button>
+      <audio id="ttsAudio" controls style="display:none; margin-top:12px; width:100%"></audio>
+    </div>
+    <div class="card">
+      <div class="card-title">批量合成课程语音
+        <button class="btn btn-primary btn-sm" onclick="ttsBatchSynthesize()">开始合成</button>
+      </div>
+      <div class="form-group">
+        <select id="ttsCourseSelect" class="form-input" style="max-width:300px">
+          <option value="">选择课程</option>
+        </select>
+      </div>
+      <div id="ttsBatchResult"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modals -->
+<div class="modal-overlay" id="categoryModal">
+  <div class="modal">
+    <div class="modal-title" id="catModalTitle">新建分类</div>
+    <input type="hidden" id="catEditId">
+    <div class="form-group"><label class="form-label">名称 *</label><input class="form-input" id="catName"></div>
+    <div class="form-group"><label class="form-label">副标题</label><input class="form-input" id="catSubtitle"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">图标(emoji)</label><input class="form-input" id="catIcon"></div>
+      <div class="form-group"><label class="form-label">排序</label><input class="form-input" type="number" id="catSort" value="0"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">色调</label><input class="form-input" id="catTone" value="sky"></div>
+      <div class="form-group"><label class="form-label">徽章</label><input class="form-input" id="catBadge"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('categoryModal')">取消</button>
+      <button class="btn btn-primary" onclick="saveCategory()">保存</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="courseModal">
+  <div class="modal">
+    <div class="modal-title" id="courseModalTitle">新建课程</div>
+    <input type="hidden" id="courseEditId">
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">标题 *</label><input class="form-input" id="courseTitle"></div>
+      <div class="form-group"><label class="form-label">分类 *</label>
+        <select class="form-input" id="courseCatId"></select>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">副标题</label><input class="form-input" id="courseSubtitle"></div>
+    <div class="form-group"><label class="form-label">简介</label><textarea class="form-textarea" id="courseSummary"></textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">适合年龄</label><input class="form-input" id="courseAge" placeholder="2-5岁"></div>
+      <div class="form-group"><label class="form-label">难度</label>
+        <select class="form-input" id="courseDiff"><option value="easy">简单</option><option value="medium">中等</option><option value="hard">较难</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">音频URL</label><input class="form-input" id="courseAudioUrl"></div>
+      <div class="form-group"><label class="form-label">视频URL</label><input class="form-input" id="courseVideoUrl"></div>
+    </div>
+    <div class="form-group"><label class="form-label">完整文本</label><textarea class="form-textarea" id="courseFullText" rows="4"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('courseModal')">取消</button>
+      <button class="btn btn-primary" onclick="saveCourse()">保存</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="uploadModal">
+  <div class="modal">
+    <div class="modal-title">上传文件</div>
+    <div class="form-group">
+      <label class="form-label">课程ID (可选)</label>
+      <input class="form-input" id="uploadCourseId" placeholder="留空则为未分配">
+    </div>
+    <div class="form-group">
+      <label class="form-label">文件类型</label>
+      <select class="form-input" id="uploadFileType">
+        <option value="audio">音频</option><option value="video">视频</option><option value="image">图片</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">选择文件</label>
+      <input type="file" id="uploadFile" class="form-input" accept="audio/*,video/*,image/*">
+    </div>
+    <div id="uploadProgress" style="display:none; margin-top:12px">
+      <div style="background:#edf0f5; border-radius:8px; height:8px; overflow:hidden">
+        <div id="uploadBar" style="background:#ff8f62; height:100%; width:0; transition:width .3s"></div>
+      </div>
+      <div style="font-size:12px; color:#7b8798; margin-top:4px" id="uploadStatus"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal('uploadModal')">取消</button>
+      <button class="btn btn-primary" onclick="doUpload()">上传</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var API = '';
+var ADMIN_KEY = localStorage.getItem('lyc_admin_key') || 'lyc-admin-dev';
+var currentTab = 'dashboard';
+var selectedVoice = 'xiaoyue';
+var coursePage = 1;
+
+function adminHeaders() {
+  return { 'Content-Type': 'application/json', 'x-admin-key': ADMIN_KEY };
+}
+
+function authHeaders(token) {
+  return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token };
+}
+
+async function api(path, opts) {
+  var defaults = { method: 'GET', headers: adminHeaders() };
+  var config = Object.assign(defaults, opts || {});
+  var res = await fetch(API + path, config);
+  return res.json();
+}
+
+function toast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show';
+  setTimeout(function () { el.className = 'toast'; }, 2500);
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+function openModal(id) { document.getElementById(id).classList.add('show'); }
+
+function fmtSize(bytes) {
+  if (!bytes) return '-';
+  if (bytes < 1024) return bytes + 'B';
+  if (bytes < 1048576) return (bytes / 1024).toFixed(1) + 'KB';
+  return (bytes / 1048576).toFixed(1) + 'MB';
+}
+
+function fmtDate(iso) {
+  if (!iso) return '-';
+  return iso.slice(0, 16).replace('T', ' ');
+}
+
+// ---- Nav ----
+document.querySelectorAll('.nav-item').forEach(function (el) {
+  el.addEventListener('click', function () {
+    document.querySelectorAll('.nav-item').forEach(function (n) { n.classList.remove('active'); });
+    document.querySelectorAll('.section').forEach(function (s) { s.classList.remove('active'); });
+    el.classList.add('active');
+    currentTab = el.dataset.tab;
+    document.getElementById('sec-' + currentTab).classList.add('active');
+    loadTab(currentTab);
+  });
+});
+
+function loadTab(tab) {
+  switch (tab) {
+    case 'dashboard': loadDashboard(); break;
+    case 'categories': loadCategories(); break;
+    case 'courses': loadCourses(); break;
+    case 'segments': loadSegmentCourseList(); break;
+    case 'media': loadMedia(); break;
+    case 'tts': loadTTS(); break;
+  }
+}
+
+// ---- Dashboard ----
+async function loadDashboard() {
+  var data = await api('/api/v1/admin/stats');
+  var grid = document.getElementById('statsGrid');
+  grid.innerHTML = [
+    { label: '分类', value: data.categories, icon: '📂' },
+    { label: '课程', value: data.courses, icon: '📚' },
+    { label: '段落', value: data.segments, icon: '📝' },
+    { label: '素材', value: data.mediaFiles, icon: '🎵' },
+    { label: '用户', value: data.users, icon: '👤' },
+    { label: 'TTS缓存', value: data.ttsCache, icon: '🔊' },
+  ].map(function (s) {
+    return '<div class="stat-card"><div>' + s.icon + '</div><div class="stat-value">' + s.value + '</div><div class="stat-label">' + s.label + '</div></div>';
+  }).join('');
+  document.getElementById('statusBar').textContent = '服务运行中 | 存储: local';
+}
+
+// ---- Categories ----
+async function loadCategories() {
+  var data = await api('/api/v1/content/categories');
+  var tbody = document.getElementById('catTable');
+  if (!data.items || data.items.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" class="empty">暂无分类</td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.items.map(function (c) {
+    return '<tr><td>' + c.id.slice(0, 8) + '...</td><td><b>' + c.name + '</b></td><td>' + (c.subtitle || '-') + '</td><td>' + (c.icon || '-') + '</td><td>' + c.sortOrder + '</td><td><button class="btn btn-secondary btn-sm" onclick="editCategory(\'' + c.id + '\')">编辑</button> <button class="btn btn-danger btn-sm" onclick="deleteCategory(\'' + c.id + '\')">删除</button></td></tr>';
+  }).join('');
+}
+
+function openCategoryModal(cat) {
+  document.getElementById('catEditId').value = cat ? cat.id : '';
+  document.getElementById('catModalTitle').textContent = cat ? '编辑分类' : '新建分类';
+  document.getElementById('catName').value = cat ? cat.name : '';
+  document.getElementById('catSubtitle').value = cat ? (cat.subtitle || '') : '';
+  document.getElementById('catIcon').value = cat ? (cat.icon || '') : '';
+  document.getElementById('catSort').value = cat ? cat.sortOrder : 0;
+  document.getElementById('catTone').value = cat ? (cat.tone || 'sky') : 'sky';
+  document.getElementById('catBadge').value = cat ? (cat.badge || '') : '';
+  openModal('categoryModal');
+}
+
+function editCategory(id) {
+  api('/api/v1/content/categories').then(function (data) {
+    var cat = data.items.find(function (c) { return c.id === id; });
+    if (cat) openCategoryModal(cat);
+  });
+}
+
+async function saveCategory() {
+  var id = document.getElementById('catEditId').value;
+  var body = {
+    name: document.getElementById('catName').value,
+    subtitle: document.getElementById('catSubtitle').value,
+    icon: document.getElementById('catIcon').value,
+    sortOrder: parseInt(document.getElementById('catSort').value) || 0,
+    tone: document.getElementById('catTone').value,
+    badge: document.getElementById('catBadge').value,
+  };
+  if (!body.name) { toast('名称不能为空'); return; }
+  if (id) {
+    await api('/api/v1/content/categories/' + id, { method: 'PUT', body: JSON.stringify(body) });
+    toast('分类已更新');
+  } else {
+    await api('/api/v1/content/categories', { method: 'POST', body: JSON.stringify(body) });
+    toast('分类已创建');
+  }
+  closeModal('categoryModal');
+  loadCategories();
+}
+
+async function deleteCategory(id) {
+  if (!confirm('确定删除此分类？')) return;
+  await api('/api/v1/content/categories/' + id, { method: 'DELETE' });
+  toast('已删除');
+  loadCategories();
+}
+
+// ---- Courses ----
+async function loadCourseCatOptions() {
+  var data = await api('/api/v1/content/categories');
+  var opts = '<option value="">全部分类</option>';
+  data.items.forEach(function (c) {
+    opts += '<option value="' + c.id + '">' + c.name + '</option>';
+  });
+  document.getElementById('courseCatFilter').innerHTML = opts;
+  document.getElementById('courseCatId').innerHTML = opts.replace('全部分类', '选择分类');
+}
+
+async function loadCourses() {
+  await loadCourseCatOptions();
+  var catId = document.getElementById('courseCatFilter').value;
+  var url = '/api/v1/content/courses?page=' + coursePage + '&pageSize=15';
+  if (catId) url += '&categoryId=' + catId;
+  var data = await api(url);
+  var tbody = document.getElementById('courseTable');
+  if (!data.items || data.items.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" class="empty">暂无课程</td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.items.map(function (c) {
+    var asrBadge = c.asrStatus === 'done' ? '<span class="badge badge-green">完成</span>' : (c.asrStatus === 'processing' ? '<span class="badge badge-yellow">处理中</span>' : '<span class="badge badge-red">未处理</span>');
+    return '<tr><td><b>' + c.title + '</b></td><td>' + (c.categoryId || '-') + '</td><td>' + (c.durationText || '-') + '</td><td>' + (c.segmentCount || 0) + '</td><td>' + asrBadge + '</td><td><button class="btn btn-secondary btn-sm" onclick="editCourse(\'' + c.id + '\')">编辑</button> <button class="btn btn-danger btn-sm" onclick="deleteCourse(\'' + c.id + '\')">删除</button></td></tr>';
+  }).join('');
+}
+
+function openCourseModal(course) {
+  document.getElementById('courseEditId').value = course ? course.id : '';
+  document.getElementById('courseModalTitle').textContent = course ? '编辑课程' : '新建课程';
+  document.getElementById('courseTitle').value = course ? course.title : '';
+  document.getElementById('courseSubtitle').value = course ? (course.subtitle || '') : '';
+  document.getElementById('courseSummary').value = course ? (course.summary || '') : '';
+  document.getElementById('courseAge').value = course ? (course.ageRange || '') : '';
+  document.getElementById('courseDiff').value = course ? (course.difficulty || 'easy') : 'easy';
+  document.getElementById('courseAudioUrl').value = course ? (course.audioUrl || '') : '';
+  document.getElementById('courseVideoUrl').value = course ? (course.videoUrl || '') : '';
+  document.getElementById('courseFullText').value = course ? (course.fullText || '') : '';
+  if (course) document.getElementById('courseCatId').value = course.categoryId;
+  openModal('courseModal');
+}
+
+function editCourse(id) {
+  api('/api/v1/content/courses/' + id).then(function (data) {
+    if (data.course) openCourseModal(data.course);
+  });
+}
+
+async function saveCourse() {
+  var id = document.getElementById('courseEditId').value;
+  var body = {
+    title: document.getElementById('courseTitle').value,
+    categoryId: document.getElementById('courseCatId').value,
+    subtitle: document.getElementById('courseSubtitle').value,
+    summary: document.getElementById('courseSummary').value,
+    ageRange: document.getElementById('courseAge').value,
+    difficulty: document.getElementById('courseDiff').value,
+    audioUrl: document.getElementById('courseAudioUrl').value,
+    videoUrl: document.getElementById('courseVideoUrl').value,
+    fullText: document.getElementById('courseFullText').value,
+  };
+  if (!body.title || !body.categoryId) { toast('标题和分类不能为空'); return; }
+  if (id) {
+    await api('/api/v1/content/courses/' + id, { method: 'PUT', body: JSON.stringify(body) });
+    toast('课程已更新');
+  } else {
+    await api('/api/v1/content/courses', { method: 'POST', body: JSON.stringify(body) });
+    toast('课程已创建');
+  }
+  closeModal('courseModal');
+  loadCourses();
+}
+
+async function deleteCourse(id) {
+  if (!confirm('确定删除此课程？')) return;
+  await api('/api/v1/content/courses/' + id, { method: 'DELETE' });
+  toast('已删除');
+  loadCourses();
+}
+
+// ---- Segments ----
+async function loadSegmentCourseList() {
+  var data = await api('/api/v1/content/courses?pageSize=100');
+  var sel = document.getElementById('segCourseSelect');
+  var ttsSel = document.getElementById('ttsCourseSelect');
+  var opts = '<option value="">选择课程</option>';
+  data.items.forEach(function (c) {
+    opts += '<option value="' + c.id + '">' + c.title + '</option>';
+  });
+  sel.innerHTML = opts;
+  ttsSel.innerHTML = opts;
+}
+
+var currentSegments = [];
+async function loadSegments() {
+  var courseId = document.getElementById('segCourseSelect').value;
+  if (!courseId) { document.getElementById('segmentList').innerHTML = ''; return; }
+  var data = await api('/api/v1/content/courses/' + courseId);
+  currentSegments = data.segments || [];
+  renderSegments();
+}
+
+function renderSegments() {
+  var container = document.getElementById('segmentList');
+  if (currentSegments.length === 0) {
+    container.innerHTML = '<div class="empty">暂无段落，点击下方添加</div>';
+    return;
+  }
+  container.innerHTML = currentSegments.map(function (seg, i) {
+    return '<div class="card" style="margin-bottom:12px;padding:16px">' +
+      '<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">' +
+      '<span style="font-weight:800;color:#ff8f62">#' + (i + 1) + '</span>' +
+      '<input class="form-input" style="flex:1" value="' + escHtml(seg.title || '') + '" onchange="currentSegments[' + i + '].title=this.value" placeholder="段落标题">' +
+      '<button class="btn btn-danger btn-sm" onclick="removeSegment(' + i + ')">删除</button>' +
+      '</div>' +
+      '<div class="form-group"><textarea class="form-textarea" rows="2" onchange="currentSegments[' + i + '].text=this.value" placeholder="段落文本">' + escHtml(seg.text || '') + '</textarea></div>' +
+      '<div class="form-row">' +
+      '<div class="form-group"><label class="form-label">提示语</label><input class="form-input" value="' + escHtml(seg.cue || '') + '" onchange="currentSegments[' + i + '].cue=this.value"></div>' +
+      '<div class="form-group"><label class="form-label">翻译</label><input class="form-input" value="' + escHtml(seg.translation || '') + '" onchange="currentSegments[' + i + '].translation=this.value"></div>' +
+      '</div></div>';
+  }).join('');
+}
+
+function escHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+function addSegmentRow() {
+  currentSegments.push({ segmentIndex: currentSegments.length, title: '', text: '', cue: '段落 ' + (currentSegments.length + 1), translation: '' });
+  renderSegments();
+}
+
+function removeSegment(i) {
+  currentSegments.splice(i, 1);
+  renderSegments();
+}
+
+async function saveAllSegments() {
+  var courseId = document.getElementById('segCourseSelect').value;
+  if (!courseId) { toast('请先选择课程'); return; }
+  var segments = currentSegments.map(function (seg, i) {
+    return {
+      title: seg.title || '',
+      text: seg.text || '',
+      cue: seg.cue || '段落 ' + (i + 1),
+      translation: seg.translation || '',
+      startTimeMs: seg.startTimeMs || 0,
+      endTimeMs: seg.endTimeMs || 0,
+    };
+  });
+  await api('/api/v1/ai/segments/' + courseId, { method: 'PUT', body: JSON.stringify({ segments: segments }) });
+  toast('段落已保存');
+}
+
+// ---- Media ----
+async function loadMedia() {
+  var data = await api('/api/v1/admin/media-files');
+  var tbody = document.getElementById('mediaTable');
+  if (!data.items || data.items.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" class="empty">暂无素材</td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.items.map(function (f) {
+    var statusBadge = f.status === 'ready' ? '<span class="badge badge-green">就绪</span>' : '<span class="badge badge-yellow">' + f.status + '</span>';
+    return '<tr><td>' + (f.original_name || '-') + '</td><td>' + f.file_type + '</td><td>' + fmtSize(f.size) + '</td><td>' + statusBadge + '</td><td>' + fmtDate(f.created_at) + '</td><td><button class="btn btn-danger btn-sm" onclick="deleteMedia(\'' + f.id + '\')">删除</button></td></tr>';
+  }).join('');
+}
+
+function openUploadModal() { openModal('uploadModal'); }
+
+async function doUpload() {
+  var fileInput = document.getElementById('uploadFile');
+  if (!fileInput.files || !fileInput.files[0]) { toast('请选择文件'); return; }
+  var file = fileInput.files[0];
+  var formData = new FormData();
+  formData.append('file', file);
+  formData.append('courseId', document.getElementById('uploadCourseId').value || 'unassigned');
+  formData.append('fileType', document.getElementById('uploadFileType').value);
+
+  document.getElementById('uploadProgress').style.display = 'block';
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', API + '/api/v1/upload/single');
+  xhr.setRequestHeader('x-admin-key', ADMIN_KEY);
+
+  xhr.upload.onprogress = function (e) {
+    if (e.lengthComputable) {
+      var pct = Math.round(e.loaded / e.total * 100);
+      document.getElementById('uploadBar').style.width = pct + '%';
+      document.getElementById('uploadStatus').textContent = pct + '% - ' + fmtSize(e.loaded) + ' / ' + fmtSize(e.total);
+    }
+  };
+
+  xhr.onload = function () {
+    if (xhr.status === 200) {
+      toast('上传成功');
+      loadMedia();
+    } else {
+      toast('上传失败');
+    }
+    closeModal('uploadModal');
+    document.getElementById('uploadProgress').style.display = 'none';
+  };
+
+  xhr.onerror = function () { toast('上传失败'); };
+  xhr.send(formData);
+}
+
+async function deleteMedia(id) {
+  if (!confirm('确定删除此文件？')) return;
+  await api('/api/v1/upload/' + id, { method: 'DELETE' });
+  toast('已删除');
+  loadMedia();
+}
+
+// ---- TTS ----
+async function loadTTS() {
+  var data = await api('/api/v1/tts/voices');
+  var grid = document.getElementById('voiceGrid');
+  grid.innerHTML = data.voices.map(function (v) {
+    return '<div class="voice-card' + (v.id === selectedVoice ? ' selected' : '') + '" data-voice="' + v.id + '" onclick="selectVoice(\'' + v.id + '\')">' +
+      '<div class="voice-avatar">' + v.avatar + '</div>' +
+      '<div class="voice-name">' + v.name + '</div>' +
+      '<div class="voice-desc">' + v.desc + '</div></div>';
+  }).join('');
+  loadSegmentCourseList();
+}
+
+function selectVoice(id) {
+  selectedVoice = id;
+  document.querySelectorAll('.voice-card').forEach(function (el) {
+    el.classList.toggle('selected', el.dataset.voice === id);
+  });
+}
+
+async function ttsPreview() {
+  var text = document.getElementById('ttsPreviewText').value;
+  if (!text) { toast('请输入文本'); return; }
+
+  var token = localStorage.getItem('lyc_admin_token') || '';
+  var res = await fetch(API + '/api/v1/tts/preview', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+    body: JSON.stringify({ text: text, voiceId: selectedVoice }),
+  });
+
+  if (!res.ok) {
+    var err = await res.json();
+    toast(err.error || '合成失败');
+    return;
+  }
+
+  var blob = await res.blob();
+  var url = URL.createObjectURL(blob);
+  var audio = document.getElementById('ttsAudio');
+  audio.src = url;
+  audio.style.display = 'block';
+  audio.play();
+}
+
+async function ttsBatchSynthesize() {
+  var courseId = document.getElementById('ttsCourseSelect').value;
+  if (!courseId) { toast('请选择课程'); return; }
+  document.getElementById('ttsBatchResult').innerHTML = '<div class="loading">正在合成中...</div>';
+
+  var data = await api('/api/v1/tts/synthesize-course/' + courseId, {
+    method: 'POST',
+    body: JSON.stringify({ voiceId: selectedVoice }),
+  });
+
+  if (!data.ok) {
+    document.getElementById('ttsBatchResult').innerHTML = '<div class="empty">' + (data.error || '合成失败') + '</div>';
+    return;
+  }
+
+  var html = '<table><thead><tr><th>段落</th><th>状态</th><th>时长</th><th>来源</th></tr></thead><tbody>';
+  data.results.forEach(function (r) {
+    var status = r.ok === false ? '<span class="badge badge-red">失败</span>' : (r.cached ? '<span class="badge badge-green">缓存</span>' : (r.skipped ? '<span class="badge badge-yellow">跳过</span>' : '<span class="badge badge-green">完成</span>'));
+    html += '<tr><td>#' + (r.segmentIndex + 1) + '</td><td>' + status + '</td><td>' + (r.durationMs ? Math.round(r.durationMs / 1000) + 's' : '-') + '</td><td>' + (r.isDev ? 'DEV' : 'ALIYUN') + '</td></tr>';
+  });
+  html += '</tbody></table>';
+  document.getElementById('ttsBatchResult').innerHTML = html;
+  toast('合成完成: ' + data.total + ' 段');
+}
+
+// ---- Init ----
+loadDashboard();
+</script>
+</body>
+</html>
